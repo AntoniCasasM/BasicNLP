@@ -1,4 +1,4 @@
-package com.basicNLP.domain;
+package com.basicNLP.stemmers;
 
 
 /*
@@ -35,8 +35,7 @@ package com.basicNLP.domain;
 
 */
 
-import java.io.*;
-import java.util.ArrayList;
+import com.basicNLP.stemmers.Stemmer;
 
 /**
  * Stemmer, implementing the Porter Stemming Algorithm
@@ -46,7 +45,7 @@ import java.util.ArrayList;
  * by calling one of the various stem(something) methods.
  */
 
-class PorterStem implements Stemmer{
+public class PorterStem implements Stemmer {
     private char[] b;
     private int i,     /* offset into b */
             i_end, /* offset to end of stemmed word */

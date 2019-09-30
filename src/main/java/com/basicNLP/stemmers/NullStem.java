@@ -1,6 +1,8 @@
-package com.basicNLP.domain;
+package com.basicNLP.stemmers;
 
-class NullStem implements Stemmer{
+import com.basicNLP.stemmers.Stemmer;
+
+class NullStem implements Stemmer {
 
     public String stem(String s) {
         return s;

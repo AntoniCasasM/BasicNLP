@@ -1,4 +1,4 @@
-package com.basicNLP.domain;
+package com.basicNLP.stemmers;
 
 public interface Stemmer {
 
