@@ -1,6 +1,7 @@
 package com.basicNLP.tf_idf;
 
-import com.basicNLP.domain.Preprocesser;
+import com.basicNLP.preprocesser.BasicPreprocessor;
+import com.basicNLP.preprocesser.Preprocessor;
 import com.basicNLP.domain.SingularDocument;
 import com.basicNLP.stemmers.PorterStem;
 import com.basicNLP.stemmers.Stemmer;
@@ -38,8 +39,8 @@ public class TfIdf {
     }
 
 
-    private List<String> analyze(String text,Stemmer stemmer) throws IOException {
-        text = clean_text(text);
+    private List<String> analyze(String text, Stemmer stemmer, Preprocessor preprocessor) throws IOException {
+        text = preprocessText(text, preprocessor);
         List<String> auxText= new ArrayList<>();
         for (String s:text.split(" ")) {
             auxText.add(stemmer.stem(s)+" ");
@@ -47,10 +48,10 @@ public class TfIdf {
         return auxText;
     }
 
-    public Map<String, Map<String, Double>> computeTFIDF(Collection<SingularDocument> corpus, Stemmer stemmer) throws IOException {
+    public Map<String, Map<String, Double>> computeTFIDF(List<SingularDocument> corpus, Stemmer stemmer, Preprocessor preprocessor) throws IOException {
         List<List<String>> docs = new ArrayList<>();
         for (SingularDocument r : corpus) {
-            docs.add(analyze(r.getText(),stemmer));
+            docs.add(analyze(r.getText(),stemmer, preprocessor));
         }
         List<Map<String, Double>> res = tfIdf(docs);
         int counter = 0;
@@ -58,7 +59,7 @@ public class TfIdf {
 
     }
 
-    private Map<String, Map<String, Double>> tfIdfMatrix(Collection<SingularDocument> corpus, List<Map<String, Double>> res, int counter) {
+    private Map<String, Map<String, Double>> tfIdfMatrix(List<SingularDocument> corpus, List<Map<String, Double>> res, int counter) {
         Map<String, Map<String, Double>> ret = new HashMap<>();
         for (SingularDocument r : corpus) {
             ret.put(r.getId(), res.get(counter));
@@ -89,12 +90,8 @@ public class TfIdf {
 
     }
 
-    private String clean_text(String text) throws IOException {
-        // Removes all text between { } and replaces it with the word code
-        text = text.replaceAll("(\\{.*?})", " code ");
-        // Removes special characters and numbers
-        text = text.replaceAll("[.$,;\\\"/:|!?=()><_{}'+%[0-9]\\[\\]]", " ");
-        text = Preprocesser.removeStopWords(text);
+    private String preprocessText(String text, Preprocessor preprocessor) throws IOException {
+        text = preprocessor.preprocess(text);
         return text;
     }
 
@@ -124,7 +121,7 @@ public class TfIdf {
         sing.add(new SingularDocument("2","I am a new example"));
         sing.add(new SingularDocument("3","The following phrase is also an [word] example"));
         TfIdf tfidf=new TfIdf(1.0);
-        Map<String, Map<String, Double>> result=tfidf.computeTFIDF(sing,new PorterStem());
+        Map<String, Map<String, Double>> result=tfidf.computeTFIDF(sing,new PorterStem(),new BasicPreprocessor());
         for (String aux:result.get("3").keySet()) {
             System.out.println(aux+" "+result.get("3").get(aux));
         }

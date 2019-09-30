@@ -362,6 +362,7 @@ public class PorterStem implements Stemmer {
     }
 
 
+    @Override
     public String stem(String s) {
         char[] aux=s.toCharArray();
         j=aux.length;
