@@ -1,6 +1,6 @@
 package com.basicNLP.tf_idf;
 
-import com.basicNLP.preprocesser.BasicPreprocessor;
+import com.basicNLP.preprocesser.PreprocessorBasic;
 import com.basicNLP.preprocesser.Preprocessor;
 import com.basicNLP.domain.SingularDocument;
 import com.basicNLP.stemmers.PorterStem;
@@ -121,7 +121,7 @@ public class TfIdf {
         sing.add(new SingularDocument("2","I am a new example"));
         sing.add(new SingularDocument("3","The following phrase is also an [word] example"));
         TfIdf tfidf=new TfIdf(1.0);
-        Map<String, Map<String, Double>> result=tfidf.computeTFIDF(sing,new PorterStem(),new BasicPreprocessor());
+        Map<String, Map<String, Double>> result=tfidf.computeTFIDF(sing,new PorterStem(),new PreprocessorBasic());
         for (String aux:result.get("3").keySet()) {
             System.out.println(aux+" "+result.get("3").get(aux));
         }

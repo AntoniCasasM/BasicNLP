@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BasicPreprocessor implements Preprocessor {
+public class PreprocessorBasic implements Preprocessor {
     @Override
     public String preprocess(String s) throws IOException {
         s=clean(s);

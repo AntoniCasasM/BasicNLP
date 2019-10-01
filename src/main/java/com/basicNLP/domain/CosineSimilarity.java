@@ -10,7 +10,9 @@ public class CosineSimilarity {
                 sum += map1.get(s) * map2.get(s);
             }
         }
-        return sum /(CosineSimilarity.norm(map1)*CosineSimilarity.norm(map2));
+        Double toDivideBy=CosineSimilarity.norm(map1)*CosineSimilarity.norm(map2);
+        if (toDivideBy==0) return 0.0;
+        else return sum /toDivideBy;
     }
 
     public static Double norm(Map<String,Double> map) {
