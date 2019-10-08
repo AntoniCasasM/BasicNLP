@@ -3,6 +3,8 @@ package com.basicNLP.textSummarizer;
 import com.basicNLP.domain.CosineSimilarity;
 import com.basicNLP.domain.SingularDocument;
 import com.basicNLP.preprocesser.Preprocessor;
+import com.basicNLP.preprocesser.PreprocessorBasic;
+import com.basicNLP.stemmers.PorterStem;
 import com.basicNLP.stemmers.Stemmer;
 import com.basicNLP.tf_idf.TfIdf;
 
@@ -26,13 +28,13 @@ public class TextRankTfIdfTextRank implements TextSummarizerTextRank {
     }
 
     private List<String> getTopRankedN(int n){
-        Map<String,Double> topTen =
+        Map<String,Double> topN =
                 calculatedPageRank.entrySet().stream()
                         .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                        .limit(10)
+                        .limit(n)
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-        return new ArrayList<String>(topTen.keySet());
+        return new ArrayList<>(topN.keySet());
     }
 
     // Damping factor is usually 0.85 or similar
@@ -76,7 +78,7 @@ public class TextRankTfIdfTextRank implements TextSummarizerTextRank {
     private Map<String, Map<String, Double>> computeProbabilityMatrix(Map<String, Map<String, Double>> model) {
         Map<String,Map<String,Double>> probability=new HashMap<>();
         int len=model.keySet().toArray().length;
-        String[] arraySet=(String[]) model.keySet().toArray();
+        String[] arraySet= model.keySet().toArray(String[]::new);
 
         for (int i=0;i<len;i++) {
             Map<String,Double> auxMap=new HashMap<>();
@@ -111,5 +113,25 @@ public class TextRankTfIdfTextRank implements TextSummarizerTextRank {
         }
         return normalizedRow;
     }
+
+    public static void  main(String[] args) throws IOException {
+        List<SingularDocument> sing=new ArrayList<>();
+
+        sing.add(new SingularDocument("1","This is example phrase 1"));
+        sing.add(new SingularDocument("2","Nothing to do with each other"));
+        sing.add(new SingularDocument("3","Completely new word"));
+        sing.add(new SingularDocument("5","Phrases must be unique"));
+        sing.add(new SingularDocument("4","Repeated not allowed"));
+        sing.add(new SingularDocument("6","Add varied sentences"));
+        sing.add(new SingularDocument("7","If a corpus is too similar, it won't see anything"));
+        sing.add(new SingularDocument("8","A different and varied corpus is necessary"));
+
+
+        TextRankTfIdfTextRank summarizer=new TextRankTfIdfTextRank(sing,1.0,new PorterStem(),new PreprocessorBasic());
+        summarizer.iterate(0.05,0.85,20);
+        System.out.println(summarizer.getTopRankedN(2));
+
+    }
+
 
 }
